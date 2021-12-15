@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+def bit1cnt(x):
+    return bin(x).count("1")
+
 def seg_to_bitfield(seg):
     bv = 0
     for x in seg:
@@ -7,52 +10,29 @@ def seg_to_bitfield(seg):
     return bv
 
 def assign_numbers(observation):
-    ob_bit = []
-    for o in observation:
-        ob_bit.append(seg_to_bitfield(o))
+    ob_bit = [seg_to_bitfield(o) for o in observation]
 
-    no = {}
-    # 1, 4, 7, 8
-    no[1] = list(filter(lambda i: bin(i).count("1") == 2, ob_bit))[0]
-    no[4] = list(filter(lambda i: bin(i).count("1") == 4, ob_bit))[0]
-    no[7] = list(filter(lambda i: bin(i).count("1") == 3, ob_bit))[0]
-    no[8] = list(filter(lambda i: bin(i).count("1") == 7, ob_bit))[0]
-        
-    ob_bit = list(filter(lambda i: i != no[1], ob_bit))
-    ob_bit = list(filter(lambda i: i != no[4], ob_bit))
-    ob_bit = list(filter(lambda i: i != no[7], ob_bit))
-    ob_bit = list(filter(lambda i: i != no[8], ob_bit))
+    no = {n: list(filter(lambda i: bit1cnt(i) == bc, ob_bit))[0] for n,bc in {1:2, 4:4, 7:3, 8:7}.items()}
 
     # 2, 3, 5
-    for x in list(filter(lambda i: bin(i).count("1") == 5, ob_bit)):
-        m1 = bin(x & no[1]).count("1")
-        m4 = bin(x & no[4]).count("1")
-        if m1==1 and m4==2:
-            no[2] = x
-        elif m1==2 and m4==3:
-            no[3] = x
-        elif m1==1 and m4==3:
-            no[5] = x
-        else:
-            raise Exception("2,3,5 missing")
+    for x in list(filter(lambda i: bit1cnt(i) == 5, ob_bit)):
+        m1 = bit1cnt(x & no[1])
+        m4 = bit1cnt(x & no[4])
+        if m1==1 and m4==2: no[2] = x
+        elif m1==2 and m4==3: no[3] = x
+        elif m1==1 and m4==3: no[5] = x
+        else: raise Exception("2,3,5 missing")
 
     # 0, 6, 9
-    for x in list(filter(lambda i: bin(i).count("1") == 6, ob_bit)):
-        m1 = bin(x & no[1]).count("1")
-        m4 = bin(x & no[4]).count("1")
-        if m1==2 and m4==3:
-            no[0] = x
-        elif m1==1 and m4==3:
-            no[6] = x
-        elif m1==2 and m4==4:
-            no[9] = x
-        else:
-            raise Exception("0,6,9 missing")
+    for x in list(filter(lambda i: bit1cnt(i) == 6, ob_bit)):
+        m1 = bit1cnt(x & no[1])
+        m4 = bit1cnt(x & no[4])
+        if m1==2 and m4==3: no[0] = x
+        elif m1==1 and m4==3: no[6] = x
+        elif m1==2 and m4==4: no[9] = x
+        else: raise Exception("0,6,9 missing")
 
-    rev_no = {}
-    for n in no:
-        rev_no[no[n]] = n
-
+    rev_no = {no[n]: n for n in no}
     return rev_no
 
 
@@ -68,14 +48,10 @@ def process(line):
 
     cnt = 0
     for d in digits_n:
-        if d == 1:
-            cnt +=1
-        if d == 4:
-            cnt +=1
-        if d == 7:
-            cnt +=1
-        if d == 8:
-            cnt +=1
+        if d == 1: cnt +=1
+        if d == 4: cnt +=1
+        if d == 7: cnt +=1
+        if d == 8: cnt +=1
 
     number = int("".join(map(str, digits_n)))
 
