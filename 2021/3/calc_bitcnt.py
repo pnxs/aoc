@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 from array import array
 from functools import reduce
 from ctypes import c_uint16
+
 
 class ColumnCounter:
     def __init__(self):
@@ -21,6 +23,7 @@ class ColumnCounter:
                 col[v] = 0
             col[v] += 1
 
+
 def get_most_common_char(seq):
     bits = array("B")
     for col in cc.cols:
@@ -30,7 +33,7 @@ def get_most_common_char(seq):
         bits.append(int(ch))
     return bits
 
-    
+
 with open("input") as f:
     cc = ColumnCounter()
     for line in f:
@@ -38,7 +41,7 @@ with open("input") as f:
 
     bits = get_most_common_char(cc.cols)
     mask = c_uint16((1 << len(bits)) - 1).value
-    n = reduce(lambda m,n: (m << 1) + n, bits, 0)
+    n = reduce(lambda m, n: (m << 1) + n, bits, 0)
     gamma = c_uint16(n & mask).value
     epsilon = c_uint16(~n & mask).value
     print(f"Mask {mask:b}")
