@@ -24,7 +24,6 @@ def assign_numbers(observation):
     ob_bit = list(filter(lambda i: i != no[8], ob_bit))
 
     # 2, 3, 5
-    x = list(filter(lambda i: bin(i).count("1") == 5, ob_bit))
     for x in list(filter(lambda i: bin(i).count("1") == 5, ob_bit)):
         m1 = bin(x & no[1]).count("1")
         m4 = bin(x & no[4]).count("1")
@@ -35,13 +34,9 @@ def assign_numbers(observation):
         elif m1==1 and m4==3:
             no[5] = x
         else:
-            print("Obs:", observation)
-            print("ob_bit", ob_bit)
-            print(no)
             raise Exception("2,3,5 missing")
 
     # 0, 6, 9
-    l = list(filter(lambda i: bin(i).count("1") == 6, ob_bit))
     for x in list(filter(lambda i: bin(i).count("1") == 6, ob_bit)):
         m1 = bin(x & no[1]).count("1")
         m4 = bin(x & no[4]).count("1")
@@ -52,12 +47,6 @@ def assign_numbers(observation):
         elif m1==2 and m4==4:
             no[9] = x
         else:
-            for ob in ob_bit:
-                print(ob, bin(ob), bin(ob).count("1"))
-            print("Obs:", observation)
-            print("l", l)
-            print("m1", m1, "m4", m4)
-            print(no)
             raise Exception("0,6,9 missing")
 
     rev_no = {}
